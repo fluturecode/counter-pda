@@ -1,4 +1,5 @@
-// Import the necessary Solana program dependencies
+use std::io::{self, Write};
+
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
     entrypoint,
@@ -9,18 +10,15 @@ use solana_program::{
     pubkey::Pubkey,
 };
 
-// Imports traits from borsch crate, used to serialize
-// and deserilize Rust structs
 use borsh::{BorshDeserialize, BorshSerialize};
 
-// Creats a new Counter struct
 #[derive(Clone, Copy, BorshSerialize, BorshDeserialize)]
 pub struct Counter {
     pub value: u8,
 }
 
 impl Sealed for Counter {}
-// Provides the ability to pack and unpack `Counter` structs into and out of byte slices
+
 impl Pack for Counter {
     const LEN: usize = 1;
 
@@ -78,4 +76,14 @@ fn process_instruction(
         }
         _ => Err(ProgramError::InvalidInstructionData),
     }
+}
+
+fn print_hello() {
+    let stdout = io::stdout();
+    let mut handle = stdout.lock();
+    handle.write_all(b"Hello, world!").unwrap();
+}
+
+fn main() {
+    print_hello();
 }
